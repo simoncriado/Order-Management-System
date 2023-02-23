@@ -13,15 +13,15 @@ code {
     monospace;
 }
 
-.App h1 {
+#App h1 {
   color: #444;
   text-align: center;
 }
 
-.App {
+#App {
   padding: 0px;
   box-sizing: border-box;
-  width: 60%;
+  width: 50%;
   height: 100%;
 }
 
@@ -49,12 +49,13 @@ code {
   position: fixed;
   top: 0;
   right: 0;
-  width: 40%;
+  width: 50%;
   height: 100%;
-  background: #777;
+  background: #444;
   margin: 0;
   padding: 30px;
   overflow: auto;
+  white-space: pre-wrap;
   box-sizing: border-box;
   color: white;
   font-size: 20px;

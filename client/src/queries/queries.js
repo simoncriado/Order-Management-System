@@ -14,10 +14,21 @@ const getOrderQuery = gql`
     order(id: $id) {
       id
       state
+      customer {
+        id
+        name
+      }
       employee {
         id
         name
       }
+      items {
+        id
+        name
+        price
+      }
+      creation
+      lastUpdate
     }
   }
 `;

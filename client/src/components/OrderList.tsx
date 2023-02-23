@@ -5,9 +5,12 @@ import { getOrdersQuery } from "../queries/queries";
 // Components
 import OrderDetails from "./OrderDetails";
 
+// Interfaces
+import { IOrder } from "../interfaces/interfaces";
+
 const OrderList = () => {
   const { loading, data } = useQuery(getOrdersQuery);
-  const [orderId, setOrderId] = useState("");
+  const [orderId, setOrderId] = useState<string | any>("");
 
   return (
     <div>
@@ -15,11 +18,11 @@ const OrderList = () => {
         {loading ? (
           <div>Loading the orders...</div>
         ) : (
-          data.orders.map((order, index) => {
+          data.orders.map((order: IOrder, index: number) => {
             return (
               <li
                 key={index}
-                onClick={(e) => {
+                onClick={(): void => {
                   setOrderId(order.id);
                 }}
               >
