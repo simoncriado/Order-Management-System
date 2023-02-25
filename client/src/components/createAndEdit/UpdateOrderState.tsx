@@ -59,7 +59,7 @@ const UpdateOrderState = (props: any): JSX.Element => {
           }}
         >
           <div className="field">
-            <h3>Editing state for order ${data.getOrder.id}:</h3>
+            <h3>Editing state for order # {data.getOrder.id}:</h3>
             <input
               type="radio"
               id="OPEN"
