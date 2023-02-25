@@ -1,124 +1,113 @@
-const graphql = require("graphql");
-
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLSchema,
-  GraphQLID,
-  GraphQLList,
-  GraphQLNonNull,
-} = graphql;
-
+const { buildSchema } = require("graphql");
 import { IOrder, ICustomer, IEmployee, IItem } from "../interfaces/interfaces";
+import { orders, employees, customers, items } from "../data/data";
 
-// Importing hardcoded data
-const { orders, employees, customers } = require("../data/data");
+// Describing the data types and mutations that the API will handle
+export let schema = buildSchema(`
+input OrderInput {
+  state: String!
+  customerId: String!
+  employeeId: String!
+  itemsId: [String]!
+}
 
-const OrderType: IOrder = new GraphQLObjectType({
-  name: "Order",
-  fields: () => ({
-    id: { type: GraphQLID },
-    state: { type: GraphQLString },
-    customer: {
-      type: CustomerType,
-      resolve(parent, args): ICustomer {
-        return customers.find((customer) => customer.id === parent.customerId);
-      },
-    },
-    employee: {
-      type: EmployeeType,
-      resolve(parent, args): IEmployee {
-        return employees.find((employee) => employee.id === parent.employeeId);
-      },
-    },
-    items: {
-      type: new GraphQLList(ItemType),
-    },
-    creation: { type: GraphQLString },
-    lastUpdate: { type: GraphQLString },
-  }),
-});
+type Order {
+  id: ID!
+  state: String!
+  customer: Customer!
+  employee: Employee
+  items: [Item]!
+  creation: String!
+  lastUpdate: String
+}
 
-const EmployeeType: IEmployee = new GraphQLObjectType({
-  name: "Employee",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-  }),
-});
+type Employee {
+  id: ID!
+  name: String!
+}
 
-const CustomerType: ICustomer = new GraphQLObjectType({
-  name: "Customer",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-  }),
-});
+type Customer {
+  id: ID!
+  name: String!
+}
 
-const ItemType: IItem = new GraphQLObjectType({
-  name: "Item",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    price: { type: graphql.GraphQLInt },
-  }),
-});
+type Item {
+  id: ID!
+  name: String!
+  price: Int!
+}
 
-const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
-  fields: {
-    order: {
-      type: OrderType,
-      args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        // Code to get data from db
-        return orders.find((order) => order.id === args.id);
-      },
-    },
-    orders: {
-      type: new GraphQLList(OrderType),
-      resolve(parent, args) {
-        return orders;
-      },
-    },
+type Query {
+  getOrder(id: ID!): Order
+  getOrders: [Order]!
+}
+
+type Mutation {
+  createOrder(input: OrderInput): Order
+  updateOrderState(id: ID!, state: String!): Order
+}
+`);
+
+// Describing how to resolve the queries and mutations that the API has
+export let root = {
+  getOrder: ({ id }) => {
+    if (orders.find((order: IOrder) => order.id == id) === undefined) {
+      throw new Error("No order exists with id " + id);
+    }
+    return orders.find((order) => order.id === id);
   },
-});
 
-const Mutation = new GraphQLObjectType({
-  name: "Mutation",
-  fields: {
-    updateOrderState: {
-      type: OrderType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        state: { type: new GraphQLNonNull(GraphQLString) },
-        employeeId: { type: new GraphQLNonNull(GraphQLString) },
-      },
-      resolve(parent, args) {
-        let orderToUpdate = orders.find((order) => order.id === args.id);
-        if (orderToUpdate) {
-          return (
-            (orderToUpdate.state = args.state),
-            (orderToUpdate.employeeId = args.employeeId),
-            (orderToUpdate.lastUpdate = `${new Date()}`),
-            orderToUpdate
-          );
-        }
-        // orders.map((order) => {
-        //   if (order.id === args.id) {
-        //     order.state = args.state;
-        //     order.employeeId = args.employeeId;
-        //     order.lastUpdate = `${new Date()}`;
-        //     return order;
-        //   }
-        // });
-        // return orders.filter((order) => order.id === args.id)[0];
-      },
-    },
+  getOrders: () => {
+    return orders;
   },
-});
 
-module.exports = new GraphQLSchema({
-  query: RootQuery,
-  mutation: Mutation,
-});
+  createOrder: ({ input }) => {
+    const id: string = String(Math.floor(Math.random() * 9999999));
+
+    let chosenCustomer: ICustomer = customers.find(
+      (customer) => customer.id === input.customerId
+    );
+
+    // If the state is in progress and no employee was give when creating the order, I just asign one employee to the order
+    let chosenEmployee: IEmployee;
+    if (input.state === "IN_PROGRESS" && input.employeeId === "") {
+      chosenEmployee = employees[0];
+    } else {
+      chosenEmployee = employees.find(
+        (employee) => employee.id === input.employeeId
+      );
+    }
+
+    let chosenItems: IItem[] = [];
+    items.map((item) => {
+      if (input.itemsId.includes(item.id)) {
+        chosenItems.push(item);
+      }
+    });
+
+    const newOrder: IOrder = {
+      id: id,
+      state: input.state,
+      customer: chosenCustomer,
+      employee: chosenEmployee,
+      items: chosenItems,
+      creation: new Date().toString(),
+      lastUpdate: new Date().toString(),
+    };
+
+    orders.push(newOrder);
+    return newOrder;
+  },
+
+  updateOrderState: ({ id, state }) => {
+    let orderToUpdate: IOrder = orders.find((order) => order.id === id);
+    if (orderToUpdate) {
+      return (
+        (orderToUpdate.state = state),
+        (orderToUpdate.employee = employees[1]),
+        (orderToUpdate.lastUpdate = `${new Date()}`),
+        orderToUpdate
+      );
+    }
+  },
+};

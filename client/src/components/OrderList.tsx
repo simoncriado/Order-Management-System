@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { getOrdersQuery } from "../queries/queries";
-
-// Components
+import { getOrdersQuery } from "../queries/getQueries";
 import OrderDetails from "./OrderDetails";
-
-// Interfaces
+import MutationForm from "./createAndEdit/MutationForm";
 import { IOrder } from "../interfaces/interfaces";
 
-const OrderList = () => {
+const OrderList = (): JSX.Element => {
   const { loading, data } = useQuery(getOrdersQuery);
   const [orderId, setOrderId] = useState<string | any>("");
 
@@ -18,9 +15,10 @@ const OrderList = () => {
         {loading ? (
           <div>Loading the orders...</div>
         ) : (
-          data.orders.map((order: IOrder, index: number) => {
+          data.getOrders.map((order: IOrder, index: number) => {
             return (
               <li
+                className={orderId === order.id ? "active" : undefined}
                 key={index}
                 onClick={(): void => {
                   setOrderId(order.id);
@@ -33,6 +31,7 @@ const OrderList = () => {
         )}
       </ul>
       <OrderDetails orderId={orderId} />
+      <MutationForm orderId={orderId} />
     </div>
   );
 };

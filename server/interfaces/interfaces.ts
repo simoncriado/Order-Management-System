@@ -17,9 +17,9 @@ export interface ICustomer {
 export interface IOrder {
   id: string | number;
   state: string;
-  customerId: string | number;
-  employeeId: string | number;
-  items: IItem[];
-  creation: string;
-  lastUpdate: string;
+  customer: ICustomer;
+  employee: IEmployee;
+  items: IItem | IItem[];
+  creation: string | Date;
+  lastUpdate: string | Date;
 }

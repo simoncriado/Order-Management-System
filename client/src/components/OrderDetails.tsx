@@ -1,8 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { getOrderQuery } from "../queries/queries";
+import { getOrderQuery } from "../queries/getQueries";
 
-const OrderDetails = (props: string | any) => {
-  //   const data = props.data;
+const OrderDetails = (props: string | any): JSX.Element => {
   const { loading, data } = useQuery(getOrderQuery, {
     variables: { id: props.orderId },
   });
@@ -15,7 +14,7 @@ const OrderDetails = (props: string | any) => {
         <pre id="order-details">{JSON.stringify(data, null, 2)}</pre>
       ) : (
         <p id="order-details">
-          Please select an order to see the raw JSON object
+          Please select an order to see the raw JSON object!
         </p>
       )}
     </>

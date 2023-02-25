@@ -1,17 +1,17 @@
-import { gql } from "@apollo/client";
+import { DocumentNode, gql } from "@apollo/client";
 
-const getOrdersQuery = gql`
+const getOrdersQuery: DocumentNode = gql`
   {
-    orders {
+    getOrders {
       id
       state
     }
   }
 `;
 
-const getOrderQuery = gql`
-  query ($id: ID) {
-    order(id: $id) {
+const getOrderQuery: DocumentNode = gql`
+  query ($id: ID!) {
+    getOrder(id: $id) {
       id
       state
       customer {
