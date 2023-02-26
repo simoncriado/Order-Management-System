@@ -4,7 +4,6 @@ import OrderList from "./components/OrderList";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const { REACT_APP_APOLLO_CLIENT_URI } = process.env;
-console.log(REACT_APP_APOLLO_CLIENT_URI);
 
 const client = new ApolloClient({
   uri: REACT_APP_APOLLO_CLIENT_URI,

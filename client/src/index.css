@@ -97,7 +97,7 @@ form {
   background-color: white;
   color: #444;
   padding: 20px;
-  height: 430px;
+  height: 350px;
 }
 
 form label {
@@ -112,6 +112,11 @@ form select {
 
 .field div {
   display: inline-block;
+}
+
+.customerEmployee {
+  display: inline-block;
+  padding-right: 50px;
 }
 
 form button {

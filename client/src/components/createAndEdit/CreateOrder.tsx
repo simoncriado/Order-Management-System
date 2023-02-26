@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { createOrderMutation } from "../../queries/mutationQueries";
 import { listOfCustomer, listOfEmployees, listOfItems } from "../../data/data";
@@ -24,6 +24,16 @@ const CreateOrder = (): JSX.Element => {
     refetchQueries: [getOrdersQuery],
   });
 
+  const [btnText, setBtnText] = useState("Send");
+
+  useEffect(() => {
+    if (btnText === "Order created!") {
+      setTimeout(() => {
+        setBtnText("Send");
+      }, 2000);
+    }
+  }, [btnText]);
+
   const handleInput = (event: any): void => {
     const { name, value, checked } = event.target;
     let valToUpdate: string | string[];
@@ -43,7 +53,8 @@ const CreateOrder = (): JSX.Element => {
   };
 
   const handleSubmit = (e: any): void => {
-    e.preventDefault();
+    // e.preventDefault();
+    setBtnText("Order created!");
     createOrder();
   };
 
@@ -55,7 +66,7 @@ const CreateOrder = (): JSX.Element => {
       }}
     >
       <div className="field">
-        <h3>Order state:</h3>
+        <h3>* Order state:</h3>
         <input
           required
           type="radio"
@@ -84,8 +95,8 @@ const CreateOrder = (): JSX.Element => {
         />
         <label htmlFor="COMPLETE">COMPLETE</label>
       </div>
-      <div className="field">
-        <h3>Customer:</h3>
+      <div className="field customerEmployee">
+        <h3>* Customer:</h3>
         <select name="customerId" onChange={handleInput} required>
           <option value="">Select customer</option>
           {listOfCustomer.map((customer: ICustomer, index: number) => (
@@ -95,7 +106,7 @@ const CreateOrder = (): JSX.Element => {
           ))}
         </select>
       </div>
-      <div className="field">
+      <div className="field customerEmployee">
         <h3>Employee:</h3>
         <select name="employeeId" onChange={handleInput}>
           <option>Select employee</option>
@@ -107,7 +118,7 @@ const CreateOrder = (): JSX.Element => {
         </select>
       </div>
       <div className="field">
-        <h3>Select items:</h3>
+        <h3>* Select items:</h3>
         {listOfItems.map((item: IItem, index: number) => (
           <div key={index}>
             <input
@@ -121,7 +132,7 @@ const CreateOrder = (): JSX.Element => {
           </div>
         ))}
       </div>
-      <button type="submit">Send</button>
+      <button type="submit">{btnText}</button>
     </form>
   );
 };

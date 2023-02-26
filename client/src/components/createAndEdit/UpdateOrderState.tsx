@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { updateOrderStateMutation } from "../../queries/mutationQueries";
 import { getOrderQuery, getOrdersQuery } from "../../queries/getQueries";
@@ -11,6 +11,17 @@ const UpdateOrderState = (props: any): JSX.Element => {
 
   // Send button is disabled if the selected state is the same as the one that the order already has in the DB
   const [disabledButton, setDisabledButton] = useState<boolean>(true);
+
+  const [btnText, setBtnText] = useState("Send");
+
+  useEffect(() => {
+    if (btnText === "Order state edited!") {
+      setTimeout(() => {
+        setBtnText("Send");
+        setDisabledButton(true);
+      }, 2000);
+    }
+  }, [btnText]);
 
   const [editedOrder, setEditedOrder] = useState<IEditOrder | any>({
     id: "",
@@ -40,6 +51,7 @@ const UpdateOrderState = (props: any): JSX.Element => {
 
   const handleSubmit = (e: any): void => {
     e.preventDefault();
+    setBtnText("Order state edited!");
     updateOrderState();
   };
 
@@ -66,7 +78,7 @@ const UpdateOrderState = (props: any): JSX.Element => {
               value="OPEN"
               name="state"
               onClick={handleInput}
-              defaultChecked={data.getOrder.state === "OPEN"}
+              defaultChecked={data.getOrder.state === "OPEN" ? true : false}
             />
             <label htmlFor="OPEN">OPEN</label>
             <input
@@ -75,7 +87,9 @@ const UpdateOrderState = (props: any): JSX.Element => {
               value="IN_PROGRESS"
               name="state"
               onClick={handleInput}
-              defaultChecked={data.getOrder.state === "IN_PROGRESS"}
+              defaultChecked={
+                data.getOrder.state === "IN_PROGRESS" ? true : false
+              }
             />
             <label htmlFor="IN_PROGRESS">IN_PROGRESS</label>
             <input
@@ -84,7 +98,7 @@ const UpdateOrderState = (props: any): JSX.Element => {
               value="COMPLETE"
               name="state"
               onClick={handleInput}
-              defaultChecked={data.getOrder.state === "COMPLETE"}
+              defaultChecked={data.getOrder.state === "COMPLETE" ? true : false}
             />
             <label htmlFor="COMPLETE">COMPLETE</label>
           </div>
@@ -93,7 +107,7 @@ const UpdateOrderState = (props: any): JSX.Element => {
             disabled={disabledButton ? true : false}
             type="submit"
           >
-            Send
+            {btnText}
           </button>
         </form>
       )}
