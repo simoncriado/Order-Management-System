@@ -52,8 +52,7 @@ const CreateOrder = (): JSX.Element => {
     setNewOrder((prevState) => ({ ...prevState, [name]: valToUpdate }));
   };
 
-  const handleSubmit = (e: any): void => {
-    // e.preventDefault();
+  const handleSubmit = (): void => {
     setBtnText("Order created!");
     createOrder();
   };
@@ -61,8 +60,8 @@ const CreateOrder = (): JSX.Element => {
   return (
     <form
       id="create-order"
-      onSubmit={(e) => {
-        handleSubmit(e);
+      onSubmit={() => {
+        handleSubmit();
       }}
     >
       <div className="field">

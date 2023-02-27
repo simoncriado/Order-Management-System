@@ -86,6 +86,7 @@ code {
   text-align: center;
   padding: 20px;
   width: calc(50% - 40px);
+  cursor: pointer;
 }
 
 .activeForm {
@@ -102,12 +103,14 @@ form {
 
 form label {
   padding: 6px;
+  cursor: pointer;
 }
 
 form select {
   margin: 4px 0;
   padding: 6px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .field div {

@@ -14,7 +14,7 @@ const OrderList = (): JSX.Element => {
       <ul id="order-list">
         {loading ? (
           <div>Loading the orders...</div>
-        ) : (
+        ) : data.getOrders ? (
           data.getOrders.map((order: IOrder, index: number) => {
             return (
               <li
@@ -28,6 +28,8 @@ const OrderList = (): JSX.Element => {
               </li>
             );
           })
+        ) : (
+          <div>No orders in the database...</div>
         )}
       </ul>
       <OrderDetails orderId={orderId} />

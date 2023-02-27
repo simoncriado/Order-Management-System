@@ -2,7 +2,7 @@ const { buildSchema } = require("graphql");
 import { IOrder, ICustomer, IEmployee, IItem } from "../interfaces/interfaces";
 import { orders, employees, customers, items } from "../data/data";
 
-// Describing the data types and mutations that the API will handle
+// Describing the data types, queries and mutations that the API will handle
 export let schema = buildSchema(`
 input OrderInput {
   state: String!
@@ -71,6 +71,7 @@ export let root = {
     // If the state is in progress and no employee was give when creating the order, I just asign one employee to the order
     let chosenEmployee: IEmployee;
     if (input.state === "IN_PROGRESS" && input.employeeId === "") {
+      // ATM just picking the first employee. In the real world I would choose an employee based on availability, qualification, language, etc
       chosenEmployee = employees[0];
     } else {
       chosenEmployee = employees.find(
